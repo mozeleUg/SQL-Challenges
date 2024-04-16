@@ -1,27 +1,36 @@
-1. Question link - https://platform.stratascratch.com/coding/10368-population-density?code_type=1
+1. You are working on a data analysis project at Deloitte where you need to analyze a dataset containing information about various cities. 
+   Your task is to calculate the population density of these cities, rounded to the nearest integer, and identify the cities with the minimum and 
+   maximum densities. The population density should be calculated as (Population / Area).
+   The output should contain 'city', 'country', 'density'.
+   Question link - https://platform.stratascratch.com/coding/10368-population-density?code_type=1
 
    SOLUTION
-WITH pop_density_cal AS (
-    SELECT 
-        city, 
-        country, 
-        (population/NULLIF(area, 0))  AS density --- NULLIF is used to avoid zero divisor errors
-    FROM cities_population),
-    
-    max_min_density AS(
-    SELECT city, country, density,
-    RANK() OVER(ORDER BY density DESC) as max_density,
-    RANK() OVER(ORDER by density ASC) AS min_density
-    FROM pop_density_cal)
-    
-SELECT city, country, density
-FROM max_min_density
-WHERE max_density = 1 or min_density = 1;
+   WITH pop_density_cal AS (
+       SELECT 
+           city, 
+           country, 
+           (population/NULLIF(area, 0))  AS density --- NULLIF is used to avoid zero divisor errors
+       FROM cities_population),
+       
+       max_min_density AS(
+       SELECT city, country, density,
+       RANK() OVER(ORDER BY density DESC) as max_density,
+       RANK() OVER(ORDER by density ASC) AS min_density
+       FROM pop_density_cal)
+       
+   SELECT city, country, density
+   FROM max_min_density
+   WHERE max_density = 1 or min_density = 1; --- filtering by the city with the highest and lowest rank
+   
+
+ 
+2. You're tasked with analyzing a Spotify-like dataset that captures user listening habits.
+   For each user, calculate the total listening time and the count of unique songs they've listened to. In the database duration values are displayed in seconds. 
+   Round the total listening duration to the nearest whole minute. 
+   Question link - https://platform.stratascratch.com/coding/10367-aggregate-listening-data?code_type=1
 
 
-2. Question link - https://platform.stratascratch.com/coding/10367-aggregate-listening-data?code_type=1
-  
-   SOLUTION 
+   The output should contain three columns: 'user_id', 'total_listen_duration', and 'unique_song_count'.   SOLUTION 
 
    WITH user_listen AS (
     SELECT user_id, 
@@ -34,5 +43,18 @@ WHERE max_density = 1 or min_density = 1;
    SELECT 
        user_id,
        unique_song_count,
-       (total_duration_secs / 60.0) AS total_listen_duration
+       ROUND(total_duration_secs / 60.0)) AS total_listen_duration  -- Sum durations and convert to minutes, then round
    FROM user_listen;
+
+   ALTERNATIVE SOLUTION 
+
+   SELECT 
+       user_id,
+       ROUND(SUM(listen_duration) / 60.0) AS total_listen_duration, -- Sum durations and convert to minutes, then round
+       COUNT(DISTINCT song_id) AS unique_song_count -- Count distinct songs
+   FROM 
+       listening_habits
+   GROUP BY 
+       user_id;
+
+3. 
