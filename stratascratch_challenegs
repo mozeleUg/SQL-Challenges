@@ -1,0 +1,19 @@
+1. Question link - https://platform.stratascratch.com/coding/10368-population-density?code_type=1
+
+   SOLUTION
+WITH pop_density_cal AS (
+    SELECT 
+        city, 
+        country, 
+        (population/NULLIF(area, 0))  AS density --- NULLIF is used to avoid the zero divisor errors
+    FROM cities_population),
+    
+    max_min_density AS(
+    SELECT city, country, density,
+    RANK() OVER(ORDER BY density DESC) as max_density,
+    RANK() OVER(ORDER by density ASC) AS min_density
+    FROM pop_density_cal)
+    
+SELECT city, country, density
+FROM max_min_density
+WHERE max_density = 1 or min_density = 1;
