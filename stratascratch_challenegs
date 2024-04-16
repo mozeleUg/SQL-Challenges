@@ -5,7 +5,7 @@ WITH pop_density_cal AS (
     SELECT 
         city, 
         country, 
-        (population/NULLIF(area, 0))  AS density --- NULLIF is used to avoid the zero divisor errors
+        (population/NULLIF(area, 0))  AS density --- NULLIF is used to avoid zero divisor errors
     FROM cities_population),
     
     max_min_density AS(
@@ -17,3 +17,22 @@ WITH pop_density_cal AS (
 SELECT city, country, density
 FROM max_min_density
 WHERE max_density = 1 or min_density = 1;
+
+
+2. Question link - https://platform.stratascratch.com/coding/10367-aggregate-listening-data?code_type=1
+  
+   SOLUTION 
+
+   WITH user_listen AS (
+    SELECT user_id, 
+    COUNT(DISTINCT song_id) AS unique_song_count,
+    SUM(listen_duration) AS total_duration_secs
+    from listening_habits
+    GROUP BY user_id
+    )
+    
+   SELECT 
+       user_id,
+       unique_song_count,
+       (total_duration_secs / 60.0) AS total_listen_duration
+   FROM user_listen;
