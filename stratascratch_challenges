@@ -9,7 +9,7 @@
        SELECT 
            city, 
            country, 
-           (population/NULLIF(area, 0))  AS density --- NULLIF is used to avoid zero divisor errors
+           ROUND((population/NULLIF(area, 0))) AS density --- NULLIF is used to avoid zero divisor errors
        FROM cities_population),
        
        max_min_density AS(
