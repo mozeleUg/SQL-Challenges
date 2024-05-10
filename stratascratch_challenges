@@ -2,6 +2,7 @@
    Your task is to calculate the population density of these cities, rounded to the nearest integer, and identify the cities with the minimum and 
    maximum densities. The population density should be calculated as (Population / Area).
    The output should contain 'city', 'country', 'density'.
+
    Question link - https://platform.stratascratch.com/coding/10368-population-density?code_type=1
 
    SOLUTION
@@ -106,7 +107,30 @@
    ORDER BY yearly_salary DESC
    LIMIT 5;
 
-5. 
+
+
+5. Capital One's marketing team is working on a project to analyze customer feedback from their feedback surveys.
+
+
+   The team sorted the words from the feedback into three different categories;
+   •	short_comments
+   •	mid_length_comments
+   •	long_comments
+
+
+   The team wants to find comments that are not short and that come from social media. The output should include 
+   'feedback_id,' 'feedback_text,' 'source_channel,' and a calculated category.
+
+   QUESTION LINK: 
+
+   SOLUTION 
+   select 
+    feedback_id,
+    feedback_text,
+    source_channel
+    from customer_feedback
+    where 
+        comment_category <> 'short_comments' AND source_channel = 'social_media';
       
 
       
