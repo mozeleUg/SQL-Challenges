@@ -27,6 +27,7 @@
 2. You're tasked with analyzing a Spotify-like dataset that captures user listening habits.
    For each user, calculate the total listening time and the count of unique songs they've listened to. In the database duration values are displayed in seconds. 
    Round the total listening duration to the nearest whole minute. 
+
    Question link - https://platform.stratascratch.com/coding/10367-aggregate-listening-data?code_type=1
 
 
@@ -90,7 +91,22 @@
       ON l.user_id = e.user_id AND l.date = e.date AND e.time > l.time
       GROUP BY e.user_id;
 
-
       SOLUTION 2 - USING SELF JOIN 
+
+
+
+4. Find contract starting dates of the top 5 most paid Lyft drivers. Consider only drivers who are still 
+   working with Lyft.
+
+   QUESTION LINK: https://platform.stratascratch.com/coding/10083-start-dates-of-top-drivers?code_type=1
+
+   SELECT start_date 
+   FROM lyft_drivers
+   WHERE end_date IS NULL
+   ORDER BY yearly_salary DESC
+   LIMIT 5;
+
+5. 
+      
 
       
