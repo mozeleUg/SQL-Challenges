@@ -131,6 +131,38 @@
     from customer_feedback
     where 
         comment_category <> 'short_comments' AND source_channel = 'social_media';
-      
+
+
+
+6. You are provided with a transactional dataset from Amazon that contains detailed information about sales across different products and marketplaces. Your task is to list the top 3 sellers in each product category for January.
+   The output should contain 'seller_id' , 'total_sales' ,'product_category' , 'market_place', and 'month'.
+
+   QUESTION LINK: https://platform.stratascratch.com/coding/10362-top-monthly-sellers?code_type=1
+
+   SOLUTION 
+   WITH jan_sales AS (
+
+    SELECT seller_id, 
+            SUM(total_sales) AS sum_sales, 
+            product_category, 
+            market_place 
+    FROM sales_data
+    WHERE month = '2024-01'
+    GROUP BY 1,3,4
+   ),
+   ranked_sellers AS (
+
+    SELECT seller_id, 
+            sum_sales, 
+            product_category, 
+            market_place, 
+            RANK() OVER(partition BY product_category, market_place ORDER BY sum_sales desc ) as rank
+    FROM jan_sales
+    )
+    
+      SELECT * 
+      from ranked_sellers
+      WHERE rank <= 3
+      ORDER BY 3,4,5
 
       
