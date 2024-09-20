@@ -32,3 +32,47 @@ SELECT
 		 THEN comment
 		 ELSE translation END AS output
 FROM comments_and_translations;
+
+
+
+
+
+2. Write a SQL Query to fetch all the duplicate records in a table.
+
+Table structure 
+
+drop table users;
+create table users
+(
+user_id int primary key,
+user_name varchar(30) not null,
+email varchar(50));
+
+insert into users values
+(1, 'Sumit', 'sumit@gmail.com'),
+(2, 'Reshma', 'reshma@gmail.com'),
+(3, 'Farhana', 'farhana@gmail.com'),
+(4, 'Robin', 'robin@gmail.com'),
+(5, 'Robin', 'robin@gmail.com');
+
+select * from users;
+
+SOLUTION - 1 
+WITH cte AS (
+		SELECT *, 
+	    ROW_NUMBER() OVER(PARTITION BY email ORDER BY user_name DESC) AS acc_no
+		FROM users)
+
+SELECT user_id, user_name, email
+FROM cte
+WHERE acc_no <> 1;
+
+
+SOLUTION 2
+
+SELECT user_id, user_name, email 
+FROM (
+		SELECT *, 
+	    ROW_NUMBER() OVER(PARTITION BY email ORDER BY user_name DESC) AS acc_no
+		FROM users) X
+WHERE x.acc_no <> 1;
