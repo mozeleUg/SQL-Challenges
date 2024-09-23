@@ -1,6 +1,5 @@
 1. Write an SQL query to display the correct message (meaningful message) from the input comments_and_translation table.
 
-    drop table comments_and_translations;
     create table comments_and_translations
     (
     	id				int,
@@ -8,18 +7,7 @@
     	translation		varchar(100)
     );
 
-    insert into comments_and_translations values
-    (1, 'very good', null),
-    (2, 'good', null),
-    (3, 'bad', null),
-    (4, 'ordinary', null),
-    (5, 'cdcdcdcd', 'very bad'),
-    (6, 'excellent', null),
-    (7, 'ababab', 'not satisfied'),
-    (8, 'satisfied', null),
-    (9, 'aabbaabb', 'extraordinary'),
-    (10, 'ccddccbb', 'medium');
-    commit;
+
 
 SOLUTION 1 - using COALESCE: 
 SELECT 
@@ -37,25 +25,16 @@ FROM comments_and_translations;
 
 
 
-2. Write a SQL Query to fetch all the duplicate records in a table.
+QUESTION 2. Write a SQL Query to fetch all the duplicate records in a table.
 
 Table structure 
 
-drop table users;
 create table users
 (
 user_id int primary key,
 user_name varchar(30) not null,
 email varchar(50));
 
-insert into users values
-(1, 'Sumit', 'sumit@gmail.com'),
-(2, 'Reshma', 'reshma@gmail.com'),
-(3, 'Farhana', 'farhana@gmail.com'),
-(4, 'Robin', 'robin@gmail.com'),
-(5, 'Robin', 'robin@gmail.com');
-
-select * from users;
 
 SOLUTION - 1 
 WITH cte AS (
@@ -76,3 +55,57 @@ FROM (
 	    ROW_NUMBER() OVER(PARTITION BY email ORDER BY user_name DESC) AS acc_no
 		FROM users) X
 WHERE x.acc_no <> 1;
+
+
+QUESTION 3. Write a SQL query to display only the details of employees who either earn the highest salary or the 
+lowest salary in each department from the employee table.
+
+Tables Structure:
+
+drop table employee_tbl;
+create table employee_tbl
+( emp_ID int primary key
+, emp_NAME varchar(50) not null
+, DEPT_NAME varchar(50)
+, SALARY int);
+
+SOLUTION 1 - USING OFFSET & SUB QUERIES
+SELECT * 
+FROM employee_tbl 
+WHERE emp_id = (
+		SELECT emp_id
+		FROM employee_tbl 
+		ORDER BY 1 DESC
+		LIMIT 1
+		OFFSET 1
+			)
+
+SOLUTION 2 - USING COMMON TABLE EXPRESSIONS & WINDOW FUNCTIONS 
+
+WITH cte AS (
+		SELECT *, 
+		ROW_NUMBER() OVER(ORDER BY emp_id DESC) AS rno
+		FROM employee_tbl
+		)
+SELECT * 
+FROM cte 
+WHERE rno =2
+
+QUESTION 4: From the doctors table, fetch the details of doctors who work in the same hospital but in different speciality.
+
+Tables Structure
+create table doctors
+(
+id int primary key,
+name varchar(50) not null,
+speciality varchar(100),
+hospital varchar(50),
+city varchar(50),
+consultation_fee int
+);
+
+SOLUTION 
+SELECT d1.* 
+FROM doctors d1 
+JOIN doctors d2 
+ON d1.hospital = d2.hospital AND d1.speciality <> d2.speciality
