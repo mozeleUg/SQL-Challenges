@@ -134,10 +134,11 @@
 
 
 
-6. You are provided with a transactional dataset from Amazon that contains detailed information about sales across different products and marketplaces. Your task is to list the top 3 sellers in each product category for January.
-   The output should contain 'seller_id' , 'total_sales' ,'product_category' , 'market_place', and 'month'.
+6. You are provided with a transactional dataset from Amazon that contains detailed information about sales across different products and marketplaces. 
+Your task is to list the top 3 sellers in each product category for January. The output should contain 'seller_id' , 'total_sales' ,'product_category' ,
+'market_place', and 'month'.
 
-   QUESTION LINK: https://platform.stratascratch.com/coding/10362-top-monthly-sellers?code_type=1
+QUESTION LINK: https://platform.stratascratch.com/coding/10362-top-monthly-sellers?code_type=1
 
    SOLUTION 
    WITH jan_sales AS (
@@ -165,5 +166,34 @@
       WHERE rank <= 3
       ORDER BY 3,4,5
       
-      
-            
+
+7. You have been asked to find the employees with the highest and lowest salary across the whole dataset. Your output should include the 
+employee's ID, salary, and employee's department, as well as a column salary_type that categorizes the output by:'Highest Salary' represents 
+the highest salary, 'Lowest Salary' represents the lowest salary
+
+QUESTION LINK: https://platform.stratascratch.com/coding/10152-workers-with-the-highest-and-lowest-salaries?code_type=1
+
+SOLUTION 1
+SELECT worker_id, department, salary, 'Highest Salary' AS salary_type
+FROM worker
+WHERE salary = (SELECT MAX(salary) FROM worker)
+
+UNION ALL
+
+SELECT worker_id, department, salary, 'Lowest Salary' AS salary_type
+FROM worker
+WHERE salary = (SELECT MIN(salary) FROM worker)
+
+
+SOLUTION 2
+WITH salary_ranking AS (
+    SELECT worker_id, department, salary, 
+    DENSE_RANK() OVER(ORDER BY salary DESC) AS high_rnk,
+    DENSE_RANK() OVER(ORDER BY salary ASC) AS low_rnk
+    FROM worker)
+
+SELECT worker_id, department, salary, 
+       CASE WHEN high_rnk = 1 THEN 'highest_salary'
+            WHEN low_rnk = 1 THEN 'lowest_salary' END AS salary_type
+FROM salary_ranking
+WHERE high_rnk = 1 OR low_rnk = 1 ;
